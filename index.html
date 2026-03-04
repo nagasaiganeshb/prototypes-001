@@ -1,0 +1,2355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>GovInsight AI — Andhra Pradesh Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── Reset & Variables ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:        #0D1B2A;
+  --ink-mid:    #1E3248;
+  --ink-soft:   #2E4A6A;
+  --surface:    #F5F7FA;
+  --surface-2:  #EAEEF5;
+  --white:      #FFFFFF;
+  --border:     rgba(30,50,72,0.10);
+  --border-2:   rgba(30,50,72,0.06);
+
+  --saffron:    #E8840A;
+  --saffron-2:  #F5A535;
+  --saffron-bg: rgba(232,132,10,0.08);
+
+  --teal:       #0A7A72;
+  --teal-2:     #12A89E;
+  --teal-bg:    rgba(10,122,114,0.08);
+
+  --red:        #C0392B;
+  --red-2:      #E05444;
+  --red-bg:     rgba(192,57,43,0.08);
+
+  --green:      #1A7A4A;
+  --green-2:    #27AE60;
+  --green-bg:   rgba(26,122,74,0.08);
+
+  --blue:       #1B3F8A;
+  --blue-2:     #2E5FBB;
+  --blue-bg:    rgba(27,63,138,0.08);
+
+  --neutral:    #5E7492;
+
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-2xl: 28px;
+
+  --shadow-xs: 0 1px 3px rgba(13,27,42,0.06), 0 1px 2px rgba(13,27,42,0.04);
+  --shadow-sm: 0 2px 8px rgba(13,27,42,0.07), 0 1px 3px rgba(13,27,42,0.05);
+  --shadow-md: 0 4px 16px rgba(13,27,42,0.10), 0 2px 6px rgba(13,27,42,0.06);
+  --shadow-lg: 0 8px 32px rgba(13,27,42,0.14), 0 4px 12px rgba(13,27,42,0.08);
+  --shadow-xl: 0 20px 60px rgba(13,27,42,0.18), 0 8px 24px rgba(13,27,42,0.10);
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Layout Shell ──────────────────────────────────────────────── */
+.shell { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ───────────────────────────────────────────────────── */
+.sidebar {
+  width: 256px;
+  min-height: 100vh;
+  background: var(--ink);
+  position: fixed;
+  left: 0; top: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  overflow: hidden;
+}
+
+/* Subtle texture overlay on sidebar */
+.sidebar::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232,132,10,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(10,122,114,0.08) 0%, transparent 50%);
+  pointer-events:none;
+}
+
+.sidebar-brand {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+}
+
+.brand-logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  flex-shrink: 0;
+  border: 0;
+}
+.brand-name { line-height: 1.2; }
+.brand-name strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.2px;
+}
+.brand-name span {
+  font-size: 10px;
+  color: rgba(255,255,255,0.38);
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+}
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ADE80;
+  box-shadow: 0 0 0 3px rgba(74,222,128,0.2);
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0%,100%{ box-shadow: 0 0 0 3px rgba(74,222,128,0.2); }
+  50%{ box-shadow: 0 0 0 5px rgba(74,222,128,0.1); }
+}
+
+/* Nav Groups */
+.nav-section {
+  padding: 16px 12px 4px;
+  flex: 1;
+  overflow-y: auto;
+}
+.nav-section::-webkit-scrollbar { width: 3px; }
+.nav-section::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius:2px; }
+
+.nav-group-label {
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  font-weight: 600;
+  padding: 8px 8px 6px;
+  margin-top: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: var(--r-md);
+  margin-bottom: 1px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  border: 1px solid transparent;
+  position: relative;
+  text-decoration: none;
+}
+.nav-item:hover { background: rgba(255,255,255,0.05); }
+.nav-item.active {
+  background: rgba(232,132,10,0.14);
+  border-color: rgba(232,132,10,0.22);
+}
+.nav-item.active::before {
+  content:'';
+  position:absolute;
+  left:-1px; top:50%;
+  transform:translateY(-50%);
+  width:3px; height:60%;
+  background: var(--saffron);
+  border-radius:0 2px 2px 0;
+}
+.nav-icon {
+  width: 30px; height: 30px;
+  border-radius: var(--r-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.05);
+  transition: all 0.18s;
+}
+.nav-item.active .nav-icon {
+  background: rgba(232,132,10,0.2);
+}
+.nav-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.48);
+  transition: color 0.18s;
+  flex: 1;
+}
+.nav-item.active .nav-label { color: #fff; font-weight: 600; }
+.nav-item:hover .nav-label { color: rgba(255,255,255,0.75); }
+.nav-badge {
+  font-size: 10px;
+  font-weight: 700;
+  background: var(--saffron);
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 7px;
+  min-width: 20px;
+  text-align: center;
+}
+.nav-badge.red { background: var(--red-2); }
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+}
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.user-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ink-soft), var(--ink-mid));
+  border: 2px solid rgba(255,255,255,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+.user-info strong {
+  display:block;
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.85);
+  font-weight: 600;
+}
+.user-info span {
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 400;
+}
+
+/* ── Main Content ──────────────────────────────────────────────── */
+.main {
+  margin-left: 256px;
+  min-height: 100vh;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: calc(100vw - 256px);
+}
+
+/* ── Top Bar ───────────────────────────────────────────────────── */
+.topbar {
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display:flex; align-items:center; gap:16px; }
+.page-breadcrumb {
+  display:flex; align-items:center; gap:6px;
+  font-size:12px; color:var(--neutral);
+}
+.page-breadcrumb .sep { opacity:0.4; }
+.page-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.topbar-right { display:flex; align-items:center; gap:10px; }
+
+.search-bar {
+  display:flex; align-items:center; gap:8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 7px 14px;
+  cursor: text;
+  transition: all 0.18s;
+  width: 220px;
+}
+.search-bar:hover { border-color: rgba(30,50,72,0.2); box-shadow: var(--shadow-xs); }
+.search-bar input {
+  border:none; background:transparent; outline:none;
+  font-size:12px; color:var(--ink); font-family:var(--font-body); width:100%;
+}
+.search-bar input::placeholder { color:var(--neutral); }
+
+.topbar-btn {
+  width:36px; height:36px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  background: var(--white);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  font-size:15px;
+  transition: all 0.15s;
+  position:relative;
+}
+.topbar-btn:hover { background:var(--surface); box-shadow:var(--shadow-xs); }
+.topbar-btn .notif-dot {
+  position:absolute; top:7px; right:7px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--red-2); border:1.5px solid #fff;
+}
+
+.date-chip {
+  display:flex; align-items:center; gap:6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 6px 12px;
+  font-size:11.5px; color:var(--ink-soft); font-weight:600;
+}
+
+/* ── Page Content ──────────────────────────────────────────────── */
+.page { display:none; animation: fadeUp 0.3s ease; }
+.page.active { display:block; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.page-inner { padding: 24px 28px 48px; }
+
+/* ── Section Headers ───────────────────────────────────────────── */
+.section-header {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  margin-bottom: 18px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+}
+.section-sub {
+  font-size:12.5px; color:var(--neutral); margin-top:3px;
+  font-weight:400;
+}
+
+/* ── KPI Strip ─────────────────────────────────────────────────── */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  padding: 20px 20px 18px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: all 0.22s ease;
+}
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.kpi-card::after {
+  content:'';
+  position:absolute;
+  top:-30px; right:-30px;
+  width:80px; height:80px;
+  border-radius:50%;
+  opacity:0.06;
+}
+.kpi-card.saffron::after { background:var(--saffron); }
+.kpi-card.teal::after    { background:var(--teal); }
+.kpi-card.red::after     { background:var(--red); }
+.kpi-card.green::after   { background:var(--green); }
+.kpi-card.blue::after    { background:var(--blue); }
+
+.kpi-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+
+.kpi-icon {
+  width:38px; height:38px;
+  border-radius: var(--r-md);
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px;
+  flex-shrink:0;
+}
+.kpi-card.saffron .kpi-icon { background:var(--saffron-bg); }
+.kpi-card.teal    .kpi-icon { background:var(--teal-bg); }
+.kpi-card.red     .kpi-icon { background:var(--red-bg); }
+.kpi-card.green   .kpi-icon { background:var(--green-bg); }
+.kpi-card.blue    .kpi-icon { background:var(--blue-bg); }
+
+.kpi-change {
+  font-size:11px; font-weight:700; font-family:var(--font-mono);
+  padding:3px 7px; border-radius:20px;
+}
+.kpi-change.up   { background:var(--green-bg);  color:var(--green); }
+.kpi-change.down { background:var(--red-bg);    color:var(--red); }
+.kpi-change.neu  { background:var(--surface-2); color:var(--neutral); }
+
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--ink);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.kpi-label {
+  font-size: 12px;
+  color: var(--neutral);
+  font-weight: 500;
+}
+.kpi-mini-bar {
+  height: 3px;
+  background: var(--surface-2);
+  border-radius: 2px;
+  margin-top: 14px;
+  overflow:hidden;
+}
+.kpi-mini-bar-fill {
+  height:100%; border-radius:2px;
+  transition: width 1s ease;
+}
+.kpi-card.saffron .kpi-mini-bar-fill { background:var(--saffron); }
+.kpi-card.teal    .kpi-mini-bar-fill { background:var(--teal); }
+.kpi-card.red     .kpi-mini-bar-fill { background:var(--red-2); }
+.kpi-card.green   .kpi-mini-bar-fill { background:var(--green-2); }
+.kpi-card.blue    .kpi-mini-bar-fill { background:var(--blue-2); }
+
+/* ── Grid Layouts ──────────────────────────────────────────────── */
+.grid-2-1 { display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:18px; }
+.grid-3-2 { display:grid; grid-template-columns:3fr 2fr; gap:18px; margin-bottom:18px; }
+.grid-2   { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
+.grid-3   { display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; margin-bottom:18px; }
+.grid-4   { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:18px; }
+.col      { display:flex; flex-direction:column; gap:18px; }
+
+/* Ensure these pages always consume full available content width */
+#page-districts,
+#page-schemes {
+  width: 100%;
+}
+#page-districts .page-inner,
+#page-schemes .page-inner {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+#page-districts .kpi-strip,
+#page-districts .panel,
+#page-schemes .panel,
+#page-schemes .scheme-grid {
+  width: 100% !important;
+}
+#page-schemes .scheme-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* News layout: make Latest Articles match full right-column height */
+#page-news .grid-3-2 { align-items: stretch; }
+#page-news .grid-3-2 > .col:first-child .panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#news-latest-articles {
+  flex: 1;
+  min-height: 0;
+  max-height: none !important;
+  overflow-y: auto;
+}
+
+/* Social layout: keep narrative column and right widgets equal height */
+#page-social .grid-3-2 { align-items: stretch; }
+#page-social .grid-3-2 > .col { display:flex; flex-direction:column; gap:18px; }
+#page-social .grid-3-2 > .col:first-child .panel {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#social-narrative-summary {
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+}
+#page-social .grid-3-2 > .col:last-child .panel {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+}
+#page-social .grid-3-2 > .col:last-child .panel:first-child {
+  flex:0 1 auto;
+}
+#page-social .grid-3-2 > .col:last-child .panel-body {
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+}
+#social-trending-hashtags {
+  flex:0 1 auto;
+  min-height:0;
+  max-height:320px;
+  overflow-y:auto;
+}
+#social-scheme-performance-grid {
+  flex:1;
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  overflow-y:auto;
+  padding-right:4px;
+}
+
+/* ── Panel / Card ──────────────────────────────────────────────── */
+.panel {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.panel-head {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--border-2);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.panel-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.2px;
+  display:flex; align-items:center; gap:7px;
+}
+.panel-title-icon {
+  width:24px; height:24px;
+  border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px;
+  background: var(--surface-2);
+}
+.panel-sub { font-size:11px; color:var(--neutral); margin-top:2px; }
+.panel-body { padding: 18px 20px; }
+.panel-body-flush { padding:0; }
+
+/* ── Pill / Badge ──────────────────────────────────────────────── */
+.pill {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 9px; border-radius:20px;
+  font-size:10.5px; font-weight:700; white-space:nowrap;
+}
+.pill.positive { background:var(--green-bg);  color:var(--green); }
+.pill.negative { background:var(--red-bg);    color:var(--red); }
+.pill.neutral  { background:var(--surface-2); color:var(--neutral); }
+.pill.saffron  { background:var(--saffron-bg);color:var(--saffron); }
+.pill.teal     { background:var(--teal-bg);   color:var(--teal); }
+.pill.blue     { background:var(--blue-bg);   color:var(--blue); }
+.pill .dot { width:5px;height:5px;border-radius:50%;flex-shrink:0; }
+.pill.positive .dot{ background:var(--green-2); }
+.pill.negative .dot{ background:var(--red-2); }
+.pill.neutral  .dot{ background:var(--neutral); }
+.pill.saffron  .dot{ background:var(--saffron-2); }
+
+.tag {
+  display:inline-block;
+  padding:2px 8px; border-radius:5px;
+  font-size:10px; font-weight:600;
+  background:var(--surface-2); color:var(--neutral);
+}
+
+/* ── Sentiment Bar ─────────────────────────────────────────────── */
+.sent-bar {
+  display:flex; height:6px; border-radius:4px; overflow:hidden; gap:2px;
+}
+.sent-pos { background:var(--green-2); border-radius:4px; }
+.sent-neg { background:var(--red-2);   border-radius:4px; }
+.sent-neu { background:#CBD5E1;        border-radius:4px; }
+.sent-legend {
+  display:flex; gap:14px; margin-top:7px;
+}
+.sent-legend-item {
+  display:flex; align-items:center; gap:5px;
+  font-size:11px; color:var(--neutral); font-weight:500;
+}
+.sent-legend-dot {
+  width:8px;height:8px;border-radius:50%;
+}
+
+/* ── Issue Row ─────────────────────────────────────────────────── */
+.issue-list { }
+.issue-row {
+  padding: 14px 20px;
+  display:flex; align-items:flex-start; gap:14px;
+  border-bottom: 1px solid var(--border-2);
+  cursor: pointer;
+  transition: background 0.14s;
+  position:relative;
+}
+.issue-row:last-child { border-bottom:none; }
+.issue-row:hover { background: #FAFBFD; }
+.issue-row.expanded { background:#FAFBFD; }
+
+.issue-rank {
+  width:24px;height:24px;
+  border-radius:var(--r-sm);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:800;
+  flex-shrink:0; margin-top:1px;
+}
+.issue-rank.hot  { background:rgba(232,132,10,0.12); color:var(--saffron); }
+.issue-rank.warm { background:var(--surface-2); color:var(--neutral); }
+
+.issue-body { flex:1; min-width:0; }
+.issue-title {
+  font-size:13px; font-weight:700;
+  color:var(--ink); margin-bottom:5px;
+  line-height:1.35;
+}
+.issue-meta {
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  margin-bottom:5px;
+}
+.issue-meta-item {
+  font-size:11px; color:var(--neutral);
+  display:flex; align-items:center; gap:4px;
+}
+.issue-sources { display:flex; gap:5px; flex-wrap:wrap; margin-top:5px; }
+.issue-source-chip {
+  font-size:10px; font-weight:600;
+  padding:2px 7px; border-radius:4px;
+  background:var(--surface-2); color:var(--neutral);
+}
+
+.issue-right { text-align:right; flex-shrink:0; }
+.issue-count {
+  font-family:var(--font-display);
+  font-size:18px; color:var(--ink); letter-spacing:-0.5px;
+  line-height:1;
+}
+.issue-trend { font-size:10.5px; color:var(--green-2); font-weight:700; margin-top:2px; font-family:var(--font-mono); }
+.issue-trend.neg { color:var(--red-2); }
+
+/* Urgency stripe */
+.issue-row::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0;
+  width:3px; border-radius:0 2px 2px 0;
+}
+.issue-row.urg-high::before   { background:var(--red-2); }
+.issue-row.urg-medium::before { background:var(--saffron); }
+.issue-row.urg-low::before    { background:var(--green-2); }
+
+/* Expanded detail */
+.issue-expand {
+  display:none;
+  padding: 12px 20px 16px 58px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border-2);
+  animation: fadeUp 0.2s ease;
+}
+.issue-expand.open { display:block; }
+.expand-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  margin-bottom:12px;
+}
+.expand-cell {
+  background:var(--white); border-radius:var(--r-md);
+  padding:10px 12px;
+  border:1px solid var(--border);
+}
+.expand-cell-label { font-size:10px; color:var(--neutral); font-weight:600; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:4px; }
+.expand-cell-val   { font-size:13px; font-weight:700; color:var(--ink); }
+
+.action-row { display:flex; gap:8px; flex-wrap:wrap; }
+.btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:7px 15px; border-radius:var(--r-md);
+  font-size:11.5px; font-weight:700;
+  cursor:pointer; border:none;
+  font-family:var(--font-body);
+  transition: all 0.15s;
+  letter-spacing:0.1px;
+}
+.btn-primary   { background:var(--ink); color:#fff; }
+.btn-primary:hover { background:var(--ink-soft); box-shadow:var(--shadow-sm); }
+.btn-saffron   { background:var(--saffron-bg); color:var(--saffron); border:1px solid rgba(232,132,10,0.2); }
+.btn-saffron:hover { background:rgba(232,132,10,0.14); }
+.btn-green     { background:var(--green-bg); color:var(--green); border:1px solid rgba(26,122,74,0.18); }
+.btn-green:hover { background:rgba(26,122,74,0.14); }
+.btn-ghost     { background:transparent; color:var(--neutral); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--surface); }
+.btn-sm { padding:5px 11px; font-size:10.5px; }
+
+/* ── Topic Cloud ───────────────────────────────────────────────── */
+.cloud-wrap {
+  display:flex; flex-wrap:wrap;
+  gap:8px 12px;
+  align-items:center;
+  align-content:center;
+  justify-content:center;
+  padding:8px 4px;
+  min-height:240px;
+  overflow:hidden;
+}
+.cloud-word {
+  cursor:pointer;
+  font-weight:700;
+  transition:all 0.22s ease;
+  line-height:1.2;
+  display:inline-block;
+}
+.cloud-word:hover { transform:scale(1.1); opacity:1 !important; }
+
+/* ── Platform Bars ─────────────────────────────────────────────── */
+.platform-row {
+  display:flex; align-items:center; gap:12px;
+  padding:9px 0;
+  border-bottom:1px solid var(--border-2);
+}
+.platform-row:last-child { border-bottom:none; }
+.platform-icon {
+  width:32px;height:32px; border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px; font-weight:900; flex-shrink:0;
+}
+.platform-name { font-size:12px; font-weight:700; color:var(--ink); }
+.platform-count { font-size:10.5px; color:var(--neutral); margin-top:1px; font-family:var(--font-mono); }
+.platform-bar-wrap { flex:1; }
+.platform-bar-track {
+  height:5px; background:var(--surface-2);
+  border-radius:3px; overflow:hidden;
+}
+.platform-bar-fill {
+  height:100%; border-radius:3px;
+  transition:width 1.2s cubic-bezier(0.25,1,0.5,1);
+}
+.platform-change {
+  font-size:10.5px; font-weight:700; font-family:var(--font-mono);
+  color:var(--green-2); white-space:nowrap;
+}
+
+/* ── District Table ────────────────────────────────────────────── */
+.dist-table { width:100%; border-collapse:collapse; }
+.dist-table th {
+  padding:10px 14px;
+  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px;
+  color:var(--neutral); text-align:left;
+  border-bottom:1px solid var(--border-2);
+  background:var(--surface);
+}
+.dist-table td {
+  padding:11px 14px;
+  font-size:12.5px; color:var(--ink-soft);
+  border-bottom:1px solid var(--border-2);
+  vertical-align:middle;
+}
+.dist-table tbody tr { cursor:pointer; transition:background 0.13s; }
+.dist-table tbody tr:hover { background:var(--surface); }
+.dist-table tbody tr:last-child td { border-bottom:none; }
+.score-badge {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:38px; height:28px; border-radius:var(--r-sm);
+  font-size:12px; font-weight:800; font-family:var(--font-display);
+}
+.score-badge.excellent { background:var(--green-bg);  color:var(--green); }
+.score-badge.good      { background:var(--teal-bg);   color:var(--teal); }
+.score-badge.average   { background:var(--saffron-bg);color:var(--saffron); }
+.score-badge.poor      { background:var(--red-bg);    color:var(--red); }
+
+.mini-sent-bar { display:flex; height:4px; border-radius:2px; overflow:hidden; gap:1px; min-width:80px; }
+
+/* ── Scheme Cards ──────────────────────────────────────────────── */
+.scheme-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.scheme-card {
+  background:var(--white); border-radius:var(--r-xl);
+  border:1px solid var(--border); padding:18px;
+  box-shadow:var(--shadow-xs);
+  transition:all 0.2s;
+  cursor:pointer;
+  position:relative; overflow:hidden;
+}
+.scheme-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-md); }
+.scheme-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:3px;
+}
+.scheme-card.pos::before { background:linear-gradient(90deg,var(--green-2),var(--teal-2)); }
+.scheme-card.avg::before { background:linear-gradient(90deg,var(--saffron),var(--saffron-2)); }
+.scheme-card.neg::before { background:linear-gradient(90deg,var(--red-2),#E8844A); }
+
+.scheme-emoji { font-size:28px; margin-bottom:10px; }
+.scheme-name { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+.scheme-mentions { font-size:11px; color:var(--neutral); margin-bottom:12px; }
+.scheme-score-ring {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:52px; height:52px; border-radius:50%;
+  position:absolute; top:18px; right:18px;
+}
+.scheme-score-val {
+  font-family:var(--font-display);
+  font-size:17px; line-height:1;
+}
+.scheme-card.pos .scheme-score-ring { background:var(--green-bg); }
+.scheme-card.pos .scheme-score-val  { color:var(--green); }
+.scheme-card.avg .scheme-score-ring { background:var(--saffron-bg); }
+.scheme-card.avg .scheme-score-val  { color:var(--saffron); }
+.scheme-card.neg .scheme-score-ring { background:var(--red-bg); }
+.scheme-card.neg .scheme-score-val  { color:var(--red); }
+
+/* ── Testimonials ──────────────────────────────────────────────── */
+.testimonial-card {
+  background:var(--white);
+  border-radius:var(--r-xl);
+  border:1px solid var(--border);
+  padding:16px 18px;
+  box-shadow:var(--shadow-xs);
+  position:relative;
+  overflow:hidden;
+}
+.testimonial-card::before {
+  content:'❝';
+  position:absolute; top:8px; right:14px;
+  font-size:48px; color:var(--surface-2);
+  font-family:serif; line-height:1;
+}
+.testimonial-text {
+  font-size:12.5px; color:var(--ink-soft); line-height:1.65;
+  font-style:italic; margin-bottom:10px; position:relative;
+}
+.testimonial-meta {
+  display:flex; align-items:center; justify-content:space-between;
+}
+.testimonial-who { font-size:11px; color:var(--neutral); font-weight:500; }
+.testimonial-platform {
+  font-size:10px; font-weight:700; padding:2px 8px;
+  border-radius:4px; background:var(--surface-2); color:var(--neutral);
+}
+.testimonial-who,
+.testimonial-platform {
+  display:none;
+}
+
+/* ── Alerts Panel ──────────────────────────────────────────────── */
+.alert-item {
+  display:flex; gap:12px; padding:12px 0;
+  border-bottom:1px solid var(--border-2);
+  align-items:flex-start;
+}
+.alert-item:last-child { border-bottom:none; }
+.alert-dot-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  padding-top:3px;
+}
+.alert-dot {
+  width:10px;height:10px; border-radius:50%; flex-shrink:0;
+}
+.alert-line {
+  width:1px; flex:1; margin-top:4px;
+  background:var(--surface-2); min-height:16px;
+}
+.alert-title { font-size:12.5px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+.alert-detail { font-size:11px; color:var(--neutral); margin-bottom:5px; }
+.alert-time {
+  font-size:10px; color:var(--neutral);
+  font-family:var(--font-mono);
+}
+
+/* ── Narrative block ───────────────────────────────────────────── */
+.narrative-block {
+  border-radius:var(--r-xl);
+  border:1px solid var(--border);
+  padding:18px 20px;
+  background:var(--white);
+  box-shadow:var(--shadow-xs);
+  margin-bottom:12px;
+  position:relative;
+  overflow:hidden;
+  transition:all 0.18s;
+  cursor:pointer;
+}
+.narrative-block:hover { box-shadow:var(--shadow-md); }
+.narrative-accent {
+  position:absolute; left:0; top:0; bottom:0; width:4px;
+}
+.narrative-content { padding-left:16px; }
+.narrative-platform { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.narrative-text { font-size:12.5px; color:var(--ink-soft); line-height:1.7; margin-bottom:12px; }
+.narrative-stats { display:flex; gap:16px; }
+.narrative-stat { font-size:11px; font-weight:700; }
+
+/* ── Hashtag List ──────────────────────────────────────────────── */
+.hashtag-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid var(--border-2);
+}
+.hashtag-item:last-child { border-bottom:none; }
+.hashtag-rank {
+  width:18px; font-size:10px; font-weight:700;
+  color:var(--neutral); text-align:center; flex-shrink:0;
+}
+.hashtag-tag { font-size:12px; font-weight:700; color:var(--blue); flex:1; }
+.hashtag-count { font-family:var(--font-mono); font-size:11px; color:var(--neutral); }
+
+/* ── Geographic Map ─────────────────────────────────────────────── */
+.map-placeholder {
+  position:relative; height:320px;
+  background:linear-gradient(145deg,#EDF2F9,#E2EAF6);
+  border-radius:var(--r-xl);
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.map-bg-text {
+  position:absolute;
+  font-family:var(--font-display);
+  font-size:80px; color:rgba(30,50,72,0.05);
+  user-select:none;
+  white-space:nowrap;
+}
+.ap-map-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.9;
+  border-radius: var(--r-lg);
+}
+.map-dot {
+  position:absolute;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.map-dot:hover { transform:scale(1.3); z-index:10; }
+.map-dot-inner {
+  border-radius:50%;
+  border:2px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+.map-tooltip {
+  position:absolute;
+  background:var(--ink);
+  color:#fff;
+  font-size:10px; font-weight:600;
+  padding:5px 9px; border-radius:6px;
+  white-space:nowrap;
+  pointer-events:none;
+  bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
+  opacity:0; transition:opacity 0.15s;
+  z-index:20;
+}
+.map-dot:hover .map-tooltip { opacity:1; }
+
+/* ── Tabs ──────────────────────────────────────────────────────── */
+.tabs {
+  display:inline-flex; background:var(--surface-2);
+  border-radius:var(--r-lg); padding:3px; gap:2px;
+  margin-bottom:20px;
+}
+.tab-btn {
+  padding:7px 16px; border-radius:var(--r-md);
+  font-size:12px; font-weight:600;
+  cursor:pointer; border:none; background:transparent;
+  color:var(--neutral); font-family:var(--font-body);
+  transition:all 0.15s;
+}
+.tab-btn.active {
+  background:var(--white); color:var(--ink);
+  box-shadow:var(--shadow-xs);
+}
+
+/* ── Department Coverage grid ──────────────────────────────────── */
+.dept-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.dept-tile {
+  border-radius:var(--r-md); padding:11px 12px;
+  text-align:center; cursor:default;
+}
+.dept-tile-pct { font-family:var(--font-display); font-size:20px; line-height:1; }
+.dept-tile-name { font-size:10px; font-weight:700; margin-top:3px; }
+
+/* ── Score ring (District) ─────────────────────────────────────── */
+.ring-wrap {
+  display:flex; align-items:center; justify-content:center;
+  padding:20px 0;
+}
+.ring-svg { overflow:visible; }
+.ring-val {
+  font-family:var(--font-display);
+  font-size:28px; text-anchor:middle; dominant-baseline:middle;
+}
+.ring-sub {
+  font-size:10px; text-anchor:middle; dominant-baseline:middle;
+  font-family:var(--font-body); font-weight:600; fill:var(--neutral);
+}
+
+/* ── Insight chips ─────────────────────────────────────────────── */
+.insight-list { display:flex; flex-direction:column; gap:8px; }
+.insight-item {
+  display:flex; gap:10px; align-items:flex-start;
+  padding:10px 12px; border-radius:var(--r-md);
+  background:var(--surface); border:1px solid var(--border-2);
+}
+.insight-arrow {
+  font-size:12px; color:var(--saffron); flex-shrink:0; margin-top:1px;
+}
+.insight-text { font-size:11.5px; color:var(--ink-soft); line-height:1.5; }
+
+/* ── Source list ───────────────────────────────────────────────── */
+.source-row {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 0; border-bottom:1px solid var(--border-2);
+}
+.source-row:last-child { border-bottom:none; }
+.source-dot { width:8px;height:8px;border-radius:50%;flex-shrink:0; }
+.source-name { font-size:12px; font-weight:700; color:var(--ink); flex:1; }
+.source-type { font-size:10px; color:var(--neutral); margin-right:8px; }
+.source-bar-track { width:80px; height:4px; background:var(--surface-2); border-radius:2px; overflow:hidden; }
+.source-bar-fill  { height:100%; border-radius:2px; }
+.source-count { font-family:var(--font-mono); font-size:11px; color:var(--neutral); width:36px; text-align:right; }
+
+/* ── Top bar page title ────────────────────────────────────────── */
+.tb-tag {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 10px; border-radius:20px;
+  font-size:10.5px; font-weight:700;
+}
+
+/* ── Scrollable inner ──────────────────────────────────────────── */
+.scroll-y { overflow-y:auto; }
+.scroll-y::-webkit-scrollbar { width:4px; }
+.scroll-y::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* ── Misc ──────────────────────────────────────────────────────── */
+.divider { height:1px; background:var(--border-2); margin:12px 0; }
+.flex-between { display:flex; align-items:center; justify-content:space-between; }
+.flex-center  { display:flex; align-items:center; }
+.gap-8  { gap:8px; }
+.gap-10 { gap:10px; }
+.gap-14 { gap:14px; }
+.mt-8  { margin-top:8px; }
+.mt-12 { margin-top:12px; }
+.mt-16 { margin-top:16px; }
+.text-sm  { font-size:11.5px; }
+.text-xs  { font-size:10.5px; }
+.text-mid { color:var(--ink-soft); }
+.text-muted { color:var(--neutral); }
+.fw-700 { font-weight:700; }
+.fw-800 { font-weight:800; }
+.mono { font-family:var(--font-mono); }
+
+/* ── Animate bars on load ──────────────────────────────────────── */
+@keyframes growWidth {
+  from{width:0}
+}
+.animate-bar { animation:growWidth 1.2s cubic-bezier(0.25,1,0.5,1) both; }
+
+/* ── Responsive scroll on panel body ──────────────────────────── */
+.panel-body.max-h { max-height:400px; overflow-y:auto; }
+.panel-body.max-h::-webkit-scrollbar { width:4px; }
+.panel-body.max-h::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ═══════════════════════════ SIDEBAR ══════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <img class="brand-logo-img" src="https://app.janatapulse.com/public/assets/g_logo.png" alt="GovInsight logo">
+      <div class="brand-name">
+        <strong>GovInsight AI</strong>
+        <span>Andhra Pradesh</span>
+      </div>
+    </div>
+    <div class="live-pill">
+      <span class="live-dot"></span>
+      Live · Updated 2m ago
+    </div>
+  </div>
+
+  <nav class="nav-section">
+    <div class="nav-group-label">Intelligence</div>
+    <div class="nav-item active" onclick="showPage('overview',this)">
+      <div class="nav-icon">⊞</div>
+      <span class="nav-label">Overview</span>
+    </div>
+    <div class="nav-item" onclick="showPage('news',this)">
+      <div class="nav-icon">📰</div>
+      <span class="nav-label">News Intelligence</span>
+      <span class="nav-badge">2.8K</span>
+    </div>
+    <div class="nav-item" onclick="showPage('social',this)">
+      <div class="nav-icon">📡</div>
+      <span class="nav-label">Social Media Intel</span>
+    </div>
+
+    <div class="nav-group-label">Governance</div>
+    <div class="nav-item" onclick="showPage('districts',this)">
+      <div class="nav-icon">🗺</div>
+      <span class="nav-label">District Analytics</span>
+    </div>
+    <div class="nav-item" onclick="showPage('schemes',this)">
+      <div class="nav-icon">📋</div>
+      <span class="nav-label">Scheme Performance</span>
+    </div>
+    <div class="nav-item" onclick="showPage('sentiment',this)">
+      <div class="nav-icon">📊</div>
+      <span class="nav-label">Sentiment Analysis</span>
+    </div>
+
+    <div class="nav-group-label">Reports</div>
+    <div class="nav-item" onclick="showPage('reports',this)">
+      <div class="nav-icon">📁</div>
+      <span class="nav-label">Reports & Exports</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-avatar">CM</div>
+      <div class="user-info">
+        <strong>CMO Admin</strong>
+        <span>Chief Minister's Office</span>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════ MAIN ═════════════════════════════════ -->
+<main class="main">
+
+<!-- ─────────────────── TOP BAR ──────────────────────────────────── -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="page-breadcrumb">
+      <span>GovInsight AI</span>
+      <span class="sep">›</span>
+      <span id="tb-page-name" style="color:var(--ink);font-weight:600;">Overview</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="date-chip">
+      <span>📅</span>
+      <span id="live-date">—</span>
+    </div>
+    <div class="topbar-btn">
+      🔔
+      <span class="notif-dot"></span>
+    </div>
+    <div class="topbar-btn">⚙</div>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE: OVERVIEW ═══════════════════════════════ -->
+<div class="page active" id="page-overview">
+<div class="page-inner">
+
+  <div class="section-header">
+    <div>
+      <div class="section-title">Command Overview</div>
+      <div class="section-sub">Real-time intelligence across news and social media — Andhra Pradesh</div>
+    </div>
+    <div class="flex-center gap-8">
+      <div class="tb-tag" style="background:var(--green-bg);color:var(--green);">
+        <span style="font-size:9px;">●</span> All Systems Active
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Strip -->
+  <div class="kpi-strip">
+    <div class="kpi-card saffron">
+      <div class="kpi-header">
+        <div class="kpi-icon">📊</div>
+      </div>
+      <div class="kpi-value">1.4K</div>
+      <div class="kpi-label">Total Mentions Today</div>
+      <div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:72%"></div></div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-header">
+        <div class="kpi-icon">⚠</div>
+      </div>
+      <div class="kpi-value">384</div>
+      <div class="kpi-label">Issues Identified</div>
+      <div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:55%"></div></div>
+    </div>
+    <div class="kpi-card teal">
+      <div class="kpi-header">
+        <div class="kpi-icon">🏷</div>
+      </div>
+      <div class="kpi-value">453</div>
+      <div class="kpi-label">Topics Classified</div>
+      <div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:55%"></div></div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-header">
+        <div class="kpi-icon">😊</div>
+      </div>
+      <div class="kpi-value">42%</div>
+      <div class="kpi-label">Positive Sentiment</div>
+      <div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:42%"></div></div>
+    </div>
+  </div>
+
+  <div class="grid-2-1">
+    <!-- Trending Issues -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title"><div class="panel-title-icon">🔥</div> Trending Issues</div>
+          <div class="panel-sub">AI-clustered public concerns across all platforms</div>
+        </div>
+        <span class="pill saffron"><span class="dot"></span>Live</span>
+      </div>
+      <div class="panel-body-flush issue-list" id="overview-trending-issues"></div>
+    </div>
+
+    <!-- Right Col -->
+    <div class="col">
+      <!-- Sentiment -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">📈</div> Today's Sentiment</div>
+        </div>
+        <div class="panel-body">
+          <div class="sent-bar">
+            <div class="sent-pos" style="flex:42"></div>
+            <div class="sent-neg" style="flex:31"></div>
+            <div class="sent-neu" style="flex:27"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;">
+            <div style="text-align:center;padding:10px;background:var(--green-bg);border-radius:var(--r-md);">
+              <div style="font-family:var(--font-display);font-size:22px;color:var(--green);">42%</div>
+              <div style="font-size:10px;color:var(--green);font-weight:700;margin-top:2px;">Positive</div>
+            </div>
+            <div style="text-align:center;padding:10px;background:var(--red-bg);border-radius:var(--r-md);">
+              <div style="font-family:var(--font-display);font-size:22px;color:var(--red);">31%</div>
+              <div style="font-size:10px;color:var(--red);font-weight:700;margin-top:2px;">Negative</div>
+            </div>
+            <div style="text-align:center;padding:10px;background:var(--surface-2);border-radius:var(--r-md);">
+              <div style="font-family:var(--font-display);font-size:22px;color:var(--neutral);">27%</div>
+              <div style="font-size:10px;color:var(--neutral);font-weight:700;margin-top:2px;">Neutral</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Platform Activity -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">📡</div> Platform Activity</div>
+        </div>
+        <div class="panel-body">
+          <div class="platform-row">
+            <div class="platform-icon" style="background:#E8F4FD;color:#1DA1F2;font-size:13px;">𝕏</div>
+            <div style="flex:1;">
+              <div class="platform-name">Twitter / X</div>
+              <div class="platform-count">48,420 mentions</div>
+              <div class="platform-bar-wrap mt-8">
+                <div class="platform-bar-track"><div class="platform-bar-fill animate-bar" style="width:100%;background:#1DA1F2;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="platform-row">
+            <div class="platform-icon" style="background:#EBF0FF;color:#1877F2;font-size:13px;">f</div>
+            <div style="flex:1;">
+              <div class="platform-name">Facebook</div>
+              <div class="platform-count">36,180 mentions</div>
+              <div class="platform-bar-wrap mt-8">
+                <div class="platform-bar-track"><div class="platform-bar-fill animate-bar" style="width:74%;background:#1877F2;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="platform-row">
+            <div class="platform-icon" style="background:#FDECEA;color:#FF0000;">▶</div>
+            <div style="flex:1;">
+              <div class="platform-name">YouTube</div>
+              <div class="platform-count">22,340 mentions</div>
+              <div class="platform-bar-wrap mt-8">
+                <div class="platform-bar-track"><div class="platform-bar-fill animate-bar" style="width:46%;background:#FF0000;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="platform-row">
+            <div class="platform-icon" style="background:#FDEEF4;color:#E1306C;font-size:11px;">◎</div>
+            <div style="flex:1;">
+              <div class="platform-name">Instagram</div>
+              <div class="platform-count">18,920 mentions</div>
+              <div class="platform-bar-wrap mt-8">
+                <div class="platform-bar-track"><div class="platform-bar-fill animate-bar" style="width:39%;background:#E1306C;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="platform-row">
+            <div class="platform-icon" style="background:var(--saffron-bg);color:var(--saffron);">📰</div>
+            <div style="flex:1;">
+              <div class="platform-name">News Media</div>
+              <div class="platform-count">14,280 articles</div>
+              <div class="platform-bar-wrap mt-8">
+                <div class="platform-bar-track"><div class="platform-bar-fill animate-bar" style="width:29%;background:var(--saffron);"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topic Cloud + District Scores -->
+  <div class="grid-2">
+    <!-- Topic Cloud -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title"><div class="panel-title-icon">☁</div> Topic Cloud</div>
+          <div class="panel-sub">Hover words to explore — size reflects media reach</div>
+        </div>
+        <div class="tabs" style="margin-bottom:0;">
+          <button class="tab-btn active">All</button>
+          <button class="tab-btn">News</button>
+          <button class="tab-btn">Social</button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="cloud-wrap" id="cloud-wrap"></div>
+        <div class="divider"></div>
+        <div class="sent-legend">
+          <div class="sent-legend-item"><div class="sent-legend-dot" style="background:var(--green-2);"></div>Positive</div>
+          <div class="sent-legend-item"><div class="sent-legend-dot" style="background:var(--red-2);"></div>Negative</div>
+          <div class="sent-legend-item"><div class="sent-legend-dot" style="background:var(--teal-2);"></div>Neutral</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- District Score -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title"><div class="panel-title-icon">🗺</div> District Governance Overview</div>
+          <div class="panel-sub">Issue volume and public sentiment by district</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="showPage('districts',document.querySelector('[onclick*=districts]'))">View All →</button>
+      </div>
+      <div class="panel-body-flush">
+        <table class="dist-table">
+          <thead>
+            <tr>
+              <th>#</th><th>District</th><th>Issues</th><th>Sentiment</th>
+            </tr>
+          </thead>
+          <tbody id="overview-districts-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-inner -->
+</div><!-- /page-overview -->
+
+
+<!-- ═══════════════════ PAGE: NEWS ═══════════════════════════════════ -->
+<div class="page" id="page-news">
+<div class="page-inner">
+  <div class="section-header">
+    <div>
+      <div class="section-title">News Media Intelligence</div>
+      <div class="section-sub">AI-driven aggregation · summarization · geographic tracking · sentiment classification</div>
+    </div>
+    <div class="flex-center gap-8">
+      <button class="btn btn-ghost btn-sm">Filter</button>
+      <button class="btn btn-primary btn-sm">Download Report</button>
+    </div>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi-card blue"><div class="kpi-header"><div class="kpi-icon">📰</div><span class="kpi-change neu">34 sources</span></div><div class="kpi-value">2,847</div><div class="kpi-label">Articles Today</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:80%"></div></div></div>
+    <div class="kpi-card saffron"><div class="kpi-header"><div class="kpi-icon">🔍</div><span class="kpi-change up">+23</span></div><div class="kpi-value">127</div><div class="kpi-label">Issues Identified</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:35%"></div></div></div>
+    <div class="kpi-card teal"><div class="kpi-header"><div class="kpi-icon">🏷</div><span class="kpi-change neu">12 depts</span></div><div class="kpi-value">48</div><div class="kpi-label">Topics Classified</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:48%"></div></div></div>
+    <div class="kpi-card green"><div class="kpi-header"><div class="kpi-icon">📈</div><span class="kpi-change up">↑ 4%</span></div><div class="kpi-value">41%</div><div class="kpi-label">Positive Coverage</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:41%"></div></div></div>
+  </div>
+
+  <div class="grid-3-2">
+    <!-- Article Feed -->
+    <div class="col">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">📰</div> Latest Articles</div>
+        </div>
+        <div class="panel-body" id="news-latest-articles"></div>
+      </div>
+    </div>
+
+    <!-- Right panels -->
+    <div class="col">
+      <!-- Source Breakdown -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">📊</div> Source Breakdown</div>
+        </div>
+        <div class="panel-body" id="news-source-breakdown"></div>
+      </div>
+
+      <!-- Department Coverage -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">🏛</div> Department Coverage</div>
+        </div>
+        <div class="panel-body">
+          <div class="dept-grid" id="news-department-coverage"></div>
+        </div>
+      </div>
+
+      <!-- Geographic Map Placeholder -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">🗺</div> Geographic Distribution</div>
+        </div>
+        <div class="panel-body" style="padding:12px;">
+          <div class="map-placeholder">
+            <img
+              class="ap-map-img"
+              src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Andhra_Pradesh_districts_map_from_2_June_2014.svg"
+              alt="Andhra Pradesh map"
+            />
+            <!-- District dots -->
+            <!-- <div class="map-dot" style="width:20px;height:20px;top:18%;left:68%;"><div class="map-dot-inner" style="width:32px;height:32px;background:var(--red-2);"></div><div class="map-tooltip">Visakhapatnam · 142 issues</div></div> -->
+            <div class="map-dot" style="width:28px;height:28px;top:42%;left:42%;"><div class="map-dot-inner" style="width:24px;height:24px;background:var(--red);"></div><div class="map-tooltip">118 issues</div></div>
+            <!-- <div class="map-dot" style="width:26px;height:26px;top:48%;left:48%;"><div class="map-dot-inner" style="width:22px;height:22px;background:var(--green-2);"></div><div class="map-tooltip">96 issues</div></div> -->
+            <div class="map-dot" style="width:24px;height:24px;top:62%;left:32%;"><div class="map-dot-inner" style="width:20px;height:20px;background:var(--saffron);"></div><div class="map-tooltip">87 issues</div></div>
+            <!-- <div class="map-dot" style="width:22px;height:22px;top:78%;left:40%;"><div class="map-dot-inner" style="width:18px;height:18px;background:var(--green-2);"></div><div class="map-tooltip">79 issues</div></div> -->
+            <!-- <div class="map-dot" style="width:20px;height:20px;top:58%;left:58%;"><div class="map-dot-inner" style="width:16px;height:16px;background:var(--red-2);"></div><div class="map-tooltip">74 issues</div></div> -->
+            <div class="map-dot" style="width:20px;height:20px;top:30%;left:60%;"><div class="map-dot-inner" style="width:16px;height:16px;background:var(--teal-2);"></div><div class="map-tooltip">68 issues</div></div>
+            <!-- Legend -->
+            <div style="position:absolute;bottom:14px;left:14px;background:rgba(255,255,255,0.9);border-radius:var(--r-md);padding:8px 10px;font-size:10px;backdrop-filter:blur(4px);">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--red-2);"></div>High issues (80+)</div>
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--saffron);"></div>Medium (50–80)</div>
+              <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:var(--green-2);"></div>Low (&lt;50)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════ PAGE: SOCIAL ═════════════════════════════════ -->
+<div class="page" id="page-social">
+<div class="page-inner">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Social Media Intelligence</div>
+      <div class="section-sub">Multi-platform aggregation · narrative analysis · scheme performance</div>
+    </div>
+    <button class="btn btn-primary btn-sm">Download Daily Brief</button>
+  </div>
+
+  <!-- Platform mini cards -->
+  <div class="grid-4" style="margin-bottom:18px;">
+    <div class="panel" style="padding:0;">
+      <div style="padding:16px;display:flex;gap:12px;align-items:center;">
+        <div style="width:36px;height:36px;border-radius:var(--r-sm);background:#E8F4FD;color:#1DA1F2;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;">𝕏</div>
+        <div><div style="font-size:11px;font-weight:700;color:var(--ink-soft);">Twitter / X</div><div style="font-family:var(--font-display);font-size:20px;color:var(--ink);letter-spacing:-0.5px;">48.4K</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">+12%</div>
+      </div>
+      <div style="padding:0 16px 12px;"><div style="height:4px;background:var(--surface-2);border-radius:2px;"><div style="width:38%;height:100%;background:#1DA1F2;border-radius:2px;"></div></div><div style="font-size:10px;color:var(--neutral);margin-top:5px;">38% positive sentiment</div></div>
+    </div>
+    <div class="panel" style="padding:0;">
+      <div style="padding:16px;display:flex;gap:12px;align-items:center;">
+        <div style="width:36px;height:36px;border-radius:var(--r-sm);background:#EBF0FF;color:#1877F2;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;flex-shrink:0;">f</div>
+        <div><div style="font-size:11px;font-weight:700;color:var(--ink-soft);">Facebook</div><div style="font-family:var(--font-display);font-size:20px;color:var(--ink);letter-spacing:-0.5px;">36.2K</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">+8%</div>
+      </div>
+      <div style="padding:0 16px 12px;"><div style="height:4px;background:var(--surface-2);border-radius:2px;"><div style="width:52%;height:100%;background:#1877F2;border-radius:2px;"></div></div><div style="font-size:10px;color:var(--neutral);margin-top:5px;">52% positive sentiment</div></div>
+    </div>
+    <div class="panel" style="padding:0;">
+      <div style="padding:16px;display:flex;gap:12px;align-items:center;">
+        <div style="width:36px;height:36px;border-radius:var(--r-sm);background:#FDECEA;color:#FF0000;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">▶</div>
+        <div><div style="font-size:11px;font-weight:700;color:var(--ink-soft);">YouTube</div><div style="font-family:var(--font-display);font-size:20px;color:var(--ink);letter-spacing:-0.5px;">22.3K</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">+19%</div>
+      </div>
+      <div style="padding:0 16px 12px;"><div style="height:4px;background:var(--surface-2);border-radius:2px;"><div style="width:61%;height:100%;background:#FF0000;border-radius:2px;"></div></div><div style="font-size:10px;color:var(--neutral);margin-top:5px;">61% positive sentiment</div></div>
+    </div>
+    <div class="panel" style="padding:0;">
+      <div style="padding:16px;display:flex;gap:12px;align-items:center;">
+        <div style="width:36px;height:36px;border-radius:var(--r-sm);background:#FDEEF4;color:#E1306C;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">◎</div>
+        <div><div style="font-size:11px;font-weight:700;color:var(--ink-soft);">Instagram</div><div style="font-family:var(--font-display);font-size:20px;color:var(--ink);letter-spacing:-0.5px;">18.9K</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">+24%</div>
+      </div>
+      <div style="padding:0 16px 12px;"><div style="height:4px;background:var(--surface-2);border-radius:2px;"><div style="width:58%;height:100%;background:#E1306C;border-radius:2px;"></div></div><div style="font-size:10px;color:var(--neutral);margin-top:5px;">58% positive sentiment</div></div>
+    </div>
+  </div>
+
+  <div class="grid-3-2">
+    <div class="col">
+      <!-- Narratives -->
+      <div class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title"><div class="panel-title-icon">📣</div> Daily Narrative Summary</div><div class="panel-sub">AI-generated · Updated 30 minutes ago</div></div>
+        </div>
+        <div class="panel-body" id="social-narrative-summary"></div>
+      </div>
+    </div>
+
+    <!-- Right -->
+    <div class="col">
+      <!-- Hashtags -->
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title"><div class="panel-title-icon">🔥</div> Trending Hashtags</div>
+        </div>
+        <div class="panel-body" style="padding:12px 16px;" id="social-trending-hashtags"></div>
+      </div>
+
+      <!-- Scheme Performance PPD -->
+      <div class="panel">
+        <div class="panel-head">
+          <div><div class="panel-title"><div class="panel-title-icon">📋</div> Scheme Performance (PPD)</div><div class="panel-sub">AI sentiment tracking per programme</div></div>
+        </div>
+        <div class="panel-body">
+          <div class="scheme-grid" id="social-scheme-performance-grid"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════ PAGE: SENTIMENT ══════════════════════════════ -->
+<div class="page" id="page-sentiment">
+<div class="page-inner">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Sentiment Analysis</div>
+      <div class="section-sub">Public perception tracking · testimonial capture · governance impact measurement</div>
+    </div>
+    <button class="btn btn-primary btn-sm">Export Sentiment Report</button>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi-card green"><div class="kpi-header"><div class="kpi-icon">😊</div><span class="kpi-change up">↑ 3.2%</span></div><div class="kpi-value">42%</div><div class="kpi-label">Overall Positive</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:42%"></div></div></div>
+    <div class="kpi-card red"><div class="kpi-header"><div class="kpi-icon">😟</div><span class="kpi-change down">↓ 1.8%</span></div><div class="kpi-value">31%</div><div class="kpi-label">Overall Negative</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:31%"></div></div></div>
+    <div class="kpi-card teal"><div class="kpi-header"><div class="kpi-icon">😐</div><span class="kpi-change neu">stable</span></div><div class="kpi-value">27%</div><div class="kpi-label">Neutral</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:27%"></div></div></div>
+    <div class="kpi-card saffron"><div class="kpi-header"><div class="kpi-icon">⭐</div><span class="kpi-change up">+38</span></div><div class="kpi-value">284</div><div class="kpi-label">Testimonials Captured</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:65%"></div></div></div>
+  </div>
+
+  <div class="grid-2">
+    <!-- Dept Sentiment -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title"><div class="panel-title-icon">🏛</div> Sentiment by Department</div>
+      </div>
+      <div class="panel-body">
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:var(--ink);">Agriculture</span>
+            <div style="display:flex;gap:10px;"><span style="font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">72%</span><span style="font-size:11px;color:var(--red-2);font-weight:700;font-family:var(--font-mono);">18%</span></div>
+          </div>
+          <div class="sent-bar"><div class="sent-pos" style="flex:72"></div><div class="sent-neg" style="flex:18"></div><div class="sent-neu" style="flex:10"></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:var(--ink);">Health</span>
+            <div style="display:flex;gap:10px;"><span style="font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">68%</span><span style="font-size:11px;color:var(--red-2);font-weight:700;font-family:var(--font-mono);">20%</span></div>
+          </div>
+          <div class="sent-bar"><div class="sent-pos" style="flex:68"></div><div class="sent-neg" style="flex:20"></div><div class="sent-neu" style="flex:12"></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:var(--ink);">Education</span>
+            <div style="display:flex;gap:10px;"><span style="font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">65%</span><span style="font-size:11px;color:var(--red-2);font-weight:700;font-family:var(--font-mono);">21%</span></div>
+          </div>
+          <div class="sent-bar"><div class="sent-pos" style="flex:65"></div><div class="sent-neg" style="flex:21"></div><div class="sent-neu" style="flex:14"></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:var(--ink);">Infrastructure</span>
+            <div style="display:flex;gap:10px;"><span style="font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">34%</span><span style="font-size:11px;color:var(--red-2);font-weight:700;font-family:var(--font-mono);">52%</span></div>
+          </div>
+          <div class="sent-bar"><div class="sent-pos" style="flex:34"></div><div class="sent-neg" style="flex:52"></div><div class="sent-neu" style="flex:14"></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:var(--ink);">Water Resources</span>
+            <div style="display:flex;gap:10px;"><span style="font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">38%</span><span style="font-size:11px;color:var(--red-2);font-weight:700;font-family:var(--font-mono);">48%</span></div>
+          </div>
+          <div class="sent-bar"><div class="sent-pos" style="flex:38"></div><div class="sent-neg" style="flex:48"></div><div class="sent-neu" style="flex:14"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px;">
+            <span style="font-size:12.5px;font-weight:700;color:var(--ink);">Finance</span>
+            <div style="display:flex;gap:10px;"><span style="font-size:11px;color:var(--green-2);font-weight:700;font-family:var(--font-mono);">55%</span><span style="font-size:11px;color:var(--red-2);font-weight:700;font-family:var(--font-mono);">28%</span></div>
+          </div>
+          <div class="sent-bar"><div class="sent-pos" style="flex:55"></div><div class="sent-neg" style="flex:28"></div><div class="sent-neu" style="flex:17"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Testimonials -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title"><div class="panel-title-icon">⭐</div> Testimonials Captured</div>
+          <div class="panel-sub">Auto-captured and classified by AI across platforms</div>
+        </div>
+        <span class="pill positive"><span class="dot"></span>AI Verified</span>
+      </div>
+      <div class="panel-body max-h" style="max-height:440px;">
+        <div class="testimonial-card" style="margin-bottom:12px;">
+          <div class="testimonial-text">"Annadata Sukhibhava has completely changed our lives. I received ₹13,500 directly in my bank account without any middlemen or bribes. For the first time I feel the government is actually for us."</div>
+          <div class="testimonial-meta">
+            <div>
+              <div class="testimonial-who">— Farmer, Guntur District</div>
+              <div style="margin-top:3px;display:flex;gap:8px;"><span class="testimonial-platform">Facebook</span><span class="testimonial-platform">📍 Guntur</span></div>
+            </div>
+            <span class="pill positive" style="flex-shrink:0;"><span class="dot"></span>Positive</span>
+          </div>
+        </div>
+        <div class="testimonial-card" style="margin-bottom:12px;">
+          <div class="testimonial-text">"The Mana Badi Mana Bhavishyathu renovation of our school is simply excellent. My children now have proper toilets, clean drinking water, and air-conditioned classrooms. This is real change."</div>
+          <div class="testimonial-meta">
+            <div>
+              <div class="testimonial-who">— Parent, Kurnool District</div>
+              <div style="margin-top:3px;display:flex;gap:8px;"><span class="testimonial-platform">Twitter/X</span><span class="testimonial-platform">📍 Kurnool</span></div>
+            </div>
+            <span class="pill positive" style="flex-shrink:0;"><span class="dot"></span>Positive</span>
+          </div>
+        </div>
+        <div class="testimonial-card" style="margin-bottom:12px;">
+          <div class="testimonial-text">"NTR Vaidya Seva saved my family when we couldn't afford the surgery. The cashless treatment at a private hospital was flawless. We are forever grateful."</div>
+          <div class="testimonial-meta">
+            <div>
+              <div class="testimonial-who">— Patient's family, Tirupati</div>
+              <div style="margin-top:3px;display:flex;gap:8px;"><span class="testimonial-platform">YouTube Comment</span><span class="testimonial-platform">📍 Tirupati</span></div>
+            </div>
+            <span class="pill positive" style="flex-shrink:0;"><span class="dot"></span>Positive</span>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-text">"The NTR Housing Scheme scheme finally gave my family our own home after 20 years of renting. I never thought this dream would come true."</div>
+          <div class="testimonial-meta">
+            <div>
+              <div class="testimonial-who">— Beneficiary, Rajahmundry</div>
+              <div style="margin-top:3px;display:flex;gap:8px;"><span class="testimonial-platform">Facebook</span><span class="testimonial-platform">📍 Rajahmundry</span></div>
+            </div>
+            <span class="pill positive" style="flex-shrink:0;"><span class="dot"></span>Positive</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ═══════════════════ OTHER PAGES (stub) ═══════════════════════════ -->
+<div class="page" id="page-districts">
+<div class="page-inner">
+  <div class="section-header"><div><div class="section-title">District Analytics</div><div class="section-sub">Geographic issue tracking · governance scoring · district-level performance</div></div><button class="btn btn-primary btn-sm">Download District Report</button></div>
+  <div class="kpi-strip">
+    <div class="kpi-card green"><div class="kpi-header"><div class="kpi-icon">🏆</div><span class="kpi-change up">Best</span></div><div class="kpi-value">Tirupati</div><div class="kpi-label">Highest Governance Score (82)</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:82%"></div></div></div>
+    <div class="kpi-card red"><div class="kpi-header"><div class="kpi-icon">⚠</div><span class="kpi-change down">Needs Work</span></div><div class="kpi-value">Nellore</div><div class="kpi-label">Lowest Score (57) — Attention Needed</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:57%"></div></div></div>
+    <div class="kpi-card saffron"><div class="kpi-header"><div class="kpi-icon">📍</div><span class="kpi-change neu">tracked</span></div><div class="kpi-value">10</div><div class="kpi-label">Districts Monitored</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:100%"></div></div></div>
+    <div class="kpi-card teal"><div class="kpi-header"><div class="kpi-icon">📊</div><span class="kpi-change up">This month</span></div><div class="kpi-value">835</div><div class="kpi-label">Total Issues Across Districts</div><div class="kpi-mini-bar"><div class="kpi-mini-bar-fill" style="width:55%"></div></div></div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><div class="panel-title"><div class="panel-title-icon">🗺</div> District Performance Table</div></div>
+    <div class="panel-body-flush">
+      <table class="dist-table">
+        <thead><tr><th>#</th><th>District</th><th>Total Issues</th><th>Positive %</th><th>Negative %</th><th>Neutral %</th><th>Sentiment Distribution</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td style="font-weight:800;color:var(--saffron);">1</td><td style="font-weight:700;">Tirupati</td><td>79</td><td style="color:var(--green-2);font-weight:700;">58%</td><td style="color:var(--red-2);font-weight:700;">24%</td><td>18%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:58;background:var(--green-2);border-radius:2px;"></div><div style="flex:24;background:var(--red-2);border-radius:2px;"></div><div style="flex:18;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:800;color:var(--saffron);">2</td><td style="font-weight:700;">Guntur</td><td>96</td><td style="color:var(--green-2);font-weight:700;">52%</td><td style="color:var(--red-2);font-weight:700;">28%</td><td>20%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:52;background:var(--green-2);border-radius:2px;"></div><div style="flex:28;background:var(--red-2);border-radius:2px;"></div><div style="flex:20;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">3</td><td style="font-weight:700;">Rajahmundry</td><td>61</td><td style="color:var(--green-2);font-weight:700;">49%</td><td style="color:var(--red-2);font-weight:700;">29%</td><td>22%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:49;background:var(--green-2);border-radius:2px;"></div><div style="flex:29;background:var(--red-2);border-radius:2px;"></div><div style="flex:22;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">4</td><td style="font-weight:700;">Vijayawada</td><td>118</td><td style="color:var(--green-2);font-weight:700;">44%</td><td style="color:var(--red-2);font-weight:700;">38%</td><td>18%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:44;background:var(--green-2);border-radius:2px;"></div><div style="flex:38;background:var(--red-2);border-radius:2px;"></div><div style="flex:18;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">5</td><td style="font-weight:700;">Kakinada</td><td>68</td><td style="color:var(--green-2);font-weight:700;">47%</td><td style="color:var(--red-2);font-weight:700;">31%</td><td>22%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:47;background:var(--green-2);border-radius:2px;"></div><div style="flex:31;background:var(--red-2);border-radius:2px;"></div><div style="flex:22;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">6</td><td style="font-weight:700;">Kurnool</td><td>87</td><td style="color:var(--green-2);font-weight:700;">41%</td><td style="color:var(--red-2);font-weight:700;">36%</td><td>23%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:41;background:var(--green-2);border-radius:2px;"></div><div style="flex:36;background:var(--red-2);border-radius:2px;"></div><div style="flex:23;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">7</td><td style="font-weight:700;">Visakhapatnam</td><td>142</td><td style="color:var(--green-2);font-weight:700;">38%</td><td style="color:var(--red-2);font-weight:700;">48%</td><td>14%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:38;background:var(--green-2);border-radius:2px;"></div><div style="flex:48;background:var(--red-2);border-radius:2px;"></div><div style="flex:14;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">8</td><td style="font-weight:700;">Anantapur</td><td>58</td><td style="color:var(--green-2);font-weight:700;">36%</td><td style="color:var(--red-2);font-weight:700;">43%</td><td>21%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:36;background:var(--green-2);border-radius:2px;"></div><div style="flex:43;background:var(--red-2);border-radius:2px;"></div><div style="flex:21;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">9</td><td style="font-weight:700;">Kadapa</td><td>52</td><td style="color:var(--green-2);font-weight:700;">43%</td><td style="color:var(--red-2);font-weight:700;">35%</td><td>22%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:43;background:var(--green-2);border-radius:2px;"></div><div style="flex:35;background:var(--red-2);border-radius:2px;"></div><div style="flex:22;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+          <tr><td style="font-weight:700;color:var(--neutral);">10</td><td style="font-weight:700;color:var(--red);">Nellore</td><td>74</td><td style="color:var(--green-2);font-weight:700;">33%</td><td style="color:var(--red-2);font-weight:700;">52%</td><td>15%</td><td><div class="mini-sent-bar" style="width:120px;"><div style="flex:33;background:var(--green-2);border-radius:2px;"></div><div style="flex:52;background:var(--red-2);border-radius:2px;"></div><div style="flex:15;background:#CBD5E1;border-radius:2px;"></div></div></td><td><button class="btn btn-ghost btn-sm">Detail →</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="page" id="page-schemes">
+  <div class="page-inner">
+    <div class="section-header"><div><div class="section-title">Scheme Performance</div><div class="section-sub">Programme & Scheme Performance Analysis (PPA) · Dashboard (PPD)</div></div><button class="btn btn-primary btn-sm">Download Report</button></div>
+    <!-- <p style="color:var(--neutral);font-size:13px;margin-top:8px;">Navigate to <strong>Social Media Intelligence → Scheme Performance tab</strong> for the full PPD/PPA module.</p> -->
+    <div style="margin-top:20px;" class="scheme-grid" id="page-scheme-performance-grid"></div>
+  </div>
+</div>
+
+<div class="page" id="page-reports">
+  <div class="page-inner">
+    <div class="section-header"><div><div class="section-title">Reports & Exports</div><div class="section-sub">Generate, schedule, and distribute intelligence reports</div></div><button class="btn btn-primary btn-sm">+ Schedule Report</button></div>
+    <div class="grid-3">
+      <div class="panel"><div class="panel-head"><div class="panel-title"><div class="panel-title-icon">📊</div>Daily Brief</div></div><div class="panel-body"><div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Auto-generated every morning at 7:00 AM. Covers all platforms, top issues, sentiment summary.</div><button class="btn btn-primary">Download Today's Brief</button></div></div>
+      <div class="panel"><div class="panel-head"><div class="panel-title"><div class="panel-title-icon">📋</div>Weekly Digest</div></div><div class="panel-body"><div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Comprehensive weekly analysis with trend comparisons, district scores, and scheme performance.</div><button class="btn btn-primary">Download This Week</button></div></div>
+      <div class="panel"><div class="panel-head"><div class="panel-title"><div class="panel-title-icon">📁</div>Custom Report</div></div><div class="panel-body"><div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">Generate a custom report filtered by date range, district, department, or platform.</div><button class="btn btn-saffron">Configure & Export</button></div></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── Navigation ────────────────────────────────────────────────────
+const PAGE_NAMES = {overview:'Overview',news:'News Intelligence',social:'Social Media Intel',districts:'District Analytics',schemes:'Scheme Performance',sentiment:'Sentiment Analysis',reports:'Reports & Exports'};
+
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const page = document.getElementById('page-'+id);
+  if(page) page.classList.add('active');
+  if(el) el.classList.add('active');
+  const tb = document.getElementById('tb-page-name');
+  if(tb) tb.textContent = PAGE_NAMES[id] || id;
+}
+
+// ── Expand/Collapse Issues ────────────────────────────────────────
+function toggleExpand(row) {
+  const expand = row.nextElementSibling;
+  if(!expand || !expand.classList.contains('issue-expand')) return;
+  const isOpen = expand.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.issue-expand.open').forEach(e => e.classList.remove('open'));
+  document.querySelectorAll('.issue-row.expanded').forEach(r => r.classList.remove('expanded'));
+  if(!isOpen) {
+    expand.classList.add('open');
+    row.classList.add('expanded');
+  }
+}
+
+// ── Overview Trending Issues (single editable source) ─────────────
+const TRENDING_TOPICS = [
+  {
+    rank: 1,
+    rankClass: 'hot',
+    urgencyClass: 'urg-high',
+    title: 'Water Supply Disruption — Visakhapatnam',
+    sentimentClass: 'negative',
+    sentimentLabel: 'Negative',
+    location: 'Visakhapatnam',
+    department: 'Water Resources',
+    timeAgo: '2h ago',
+    sources: ['Twitter/X', 'TOI', 'Facebook'],
+    mentionCount: '1,284',
+    details: {
+      district: 'Visakhapatnam',
+      department: 'Water Resources',
+      platforms: 'Twitter, FB, News',
+      statusLabel: 'Open · High',
+      statusColor: 'var(--red)'
+    },
+    actions: [
+      { label: 'Assign Department', className: 'btn btn-primary btn-sm' },
+      { label: 'Escalate to CMO', className: 'btn btn-saffron btn-sm' },
+      { label: 'Mark Resolved', className: 'btn btn-green btn-sm' },
+      { label: 'View Thread', className: 'btn btn-ghost btn-sm' }
+    ]
+  },
+  {
+    rank: 2,
+    rankClass: 'hot',
+    urgencyClass: 'urg-low',
+    title: 'NTR Housing Scheme — Strong Positive Response',
+    sentimentClass: 'positive',
+    sentimentLabel: 'Positive',
+    location: 'Guntur',
+    department: 'Agriculture',
+    timeAgo: '4h ago',
+    sources: ['Facebook', 'YouTube', 'Twitter/X'],
+    mentionCount: '982',
+    details: {
+      district: 'Guntur',
+      department: 'Agriculture',
+      platforms: 'FB, YT, Twitter',
+      statusLabel: 'Positive Signal',
+      statusColor: 'var(--green)'
+    },
+    actions: [
+      { label: 'View Testimonials', className: 'btn btn-primary btn-sm' },
+      { label: 'Full Report', className: 'btn btn-ghost btn-sm' }
+    ]
+  },
+  {
+    rank: 3,
+    rankClass: 'warm',
+    urgencyClass: 'urg-medium',
+    title: 'Road Construction Delays — NH-16 Vijayawada',
+    sentimentClass: 'negative',
+    sentimentLabel: 'Negative',
+    location: 'Vijayawada',
+    department: 'Infrastructure',
+    timeAgo: '1h ago',
+    sources: ['Twitter/X', 'Instagram', 'Eenadu'],
+    mentionCount: '876',
+    details: {
+      district: 'Vijayawada',
+      department: 'Infrastructure',
+      platforms: 'Twitter, IG, News',
+      statusLabel: 'Monitoring · Med',
+      statusColor: 'var(--saffron)'
+    },
+    actions: [
+      { label: 'Assign Department', className: 'btn btn-primary btn-sm' },
+      { label: 'Escalate to CMO', className: 'btn btn-saffron btn-sm' },
+      { label: 'View Thread', className: 'btn btn-ghost btn-sm' }
+    ]
+  },
+  {
+    rank: 4,
+    rankClass: 'warm',
+    urgencyClass: 'urg-high',
+    title: 'Power Outages Affecting Businesses — Nellore',
+    sentimentClass: 'negative',
+    sentimentLabel: 'Negative',
+    location: 'Nellore',
+    department: 'Infrastructure',
+    timeAgo: '30m ago',
+    sources: ['Twitter/X', 'Facebook', 'Sakshi'],
+    mentionCount: '689',
+    details: {
+      district: 'Nellore',
+      department: 'Infrastructure/Energy',
+      platforms: 'Twitter, FB, News',
+      statusLabel: 'Escalating · High',
+      statusColor: 'var(--red)'
+    },
+    actions: [
+      { label: 'Assign Department', className: 'btn btn-primary btn-sm' },
+      { label: 'Escalate to CMO', className: 'btn btn-saffron btn-sm' },
+      { label: 'Mark Resolved', className: 'btn btn-green btn-sm' }
+    ]
+  },
+  {
+    rank: 5,
+    rankClass: 'warm',
+    urgencyClass: 'urg-low',
+    title: 'School Infrastructure Improvement — Kurnool',
+    sentimentClass: 'positive',
+    sentimentLabel: 'Positive',
+    location: 'Kurnool',
+    department: 'Education',
+    timeAgo: '6h ago',
+    sources: ['Facebook', 'YouTube'],
+    mentionCount: '743',
+    details: {
+      district: 'Kurnool',
+      department: 'Education',
+      platforms: 'FB, YouTube',
+      statusLabel: 'Positive Signal',
+      statusColor: 'var(--green)'
+    },
+    actions: [
+      { label: 'View Testimonials', className: 'btn btn-primary btn-sm' },
+      { label: 'Full Report', className: 'btn btn-ghost btn-sm' }
+    ]
+  }
+];
+
+function renderOverviewTrendingIssues() {
+  const target = document.getElementById('overview-trending-issues');
+  if(!target) return;
+
+  target.innerHTML = TRENDING_TOPICS.map((topic) => {
+    const sources = topic.sources.map((src) => `<span class="issue-source-chip">${src}</span>`).join('');
+    const actions = topic.actions.map((action) => `<button class="${action.className}">${action.label}</button>`).join('');
+    return `
+      <div class="issue-row ${topic.urgencyClass}">
+        <div class="issue-rank ${topic.rankClass}">${topic.rank}</div>
+        <div class="issue-body">
+          <div class="issue-title">${topic.title}</div>
+          <div class="issue-meta">
+            <span class="pill ${topic.sentimentClass}"><span class="dot"></span>${topic.sentimentLabel}</span>
+            <span class="issue-meta-item">📍 ${topic.location}</span>
+            <span class="issue-meta-item">🏛 ${topic.department}</span>
+            <span class="issue-meta-item">🕐 ${topic.timeAgo}</span>
+          </div>
+          <div class="issue-sources">${sources}</div>
+        </div>
+        <div class="issue-right">
+          <div class="issue-count">${topic.mentionCount}</div>
+        </div>
+      </div>
+      <div class="issue-expand">
+        <div class="expand-grid">
+          <div class="expand-cell"><div class="expand-cell-label">District</div><div class="expand-cell-val">${topic.details.district}</div></div>
+          <div class="expand-cell"><div class="expand-cell-label">Department</div><div class="expand-cell-val">${topic.details.department}</div></div>
+          <div class="expand-cell"><div class="expand-cell-label">Platforms</div><div class="expand-cell-val">${topic.details.platforms}</div></div>
+          <div class="expand-cell"><div class="expand-cell-label">Status</div><div class="expand-cell-val" style="color:${topic.details.statusColor}">${topic.details.statusLabel}</div></div>
+        </div>
+        <div class="action-row">${actions}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+renderOverviewTrendingIssues();
+
+// ── Live Clock ────────────────────────────────────────────────────
+function updateClock() {
+  const d = new Date();
+  const el = document.getElementById('live-date');
+  if(el) el.textContent = d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + '  ' + d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+}
+updateClock();
+setInterval(updateClock, 30000);
+
+// ── Topic Cloud + Overview Districts (single editable sources) ────
+const TOPIC_CLOUD_TOPICS = [
+  { text: 'Anna Canteen', sentiment: 'pos', size: 52 },
+  { text: 'Water Crisis', sentiment: 'neg', size: 46 },
+  // { text: 'Road Repair', sentiment: 'neg', size: 20 },
+  { text: 'Healthcare', sentiment: 'pos', size: 38 },
+  { text: 'Education', sentiment: 'neu', size: 36 },
+  { text: 'Power Cut', sentiment: 'neg', size: 35 },
+  { text: 'Super Six', sentiment: 'pos', size: 42 },
+  // { text: 'Flood Relief', sentiment: 'neg', size: 32 },
+  // { text: 'Digital AP', sentiment: 'pos', size: 30 },
+  { text: 'Employment', sentiment: 'neu', size: 20 },
+  // { text: 'Infrastructure', sentiment: 'neg', size: 27 },
+  // { text: 'Tourism', sentiment: 'pos', size: 25 },
+  { text: 'NTR Vaidya Seva', sentiment: 'pos', size: 24 },
+  { text: 'Traffic', sentiment: 'neg', size: 23 },
+  { text: 'Pensions', sentiment: 'pos', size: 22 },
+  // { text: 'Corruption', sentiment: 'neg', size: 21 },
+  // { text: 'Temples', sentiment: 'neu', size: 19 },
+  { text: 'Sports', sentiment: 'pos', size: 18 }
+];
+
+const OVERVIEW_DISTRICTS = [
+  { rank: 1, district: 'Tirupati', issues: 79, sentiment: { pos: 58, neg: 24, neu: 18 } },
+  { rank: 2, district: 'Anakapalli', issues: 96, sentiment: { pos: 52, neg: 28, neu: 20 } },
+  { rank: 3, district: 'Sri Sathyasai', issues: 61, sentiment: { pos: 49, neg: 29, neu: 22 } },
+  { rank: 4, district: 'Eluru', issues: 118, sentiment: { pos: 44, neg: 38, neu: 18 } },
+  { rank: 5, district: 'Kurnool', issues: 87, sentiment: { pos: 41, neg: 36, neu: 23 } },
+  { rank: 6, district: 'Guntur', issues: 58, sentiment: { pos: 36, neg: 43, neu: 21 } },
+  { rank: 7, district: 'Nandyal', issues: 74, sentiment: { pos: 33, neg: 52, neu: 15 } }
+];
+
+const SENTIMENT_COLORS = { pos: 'var(--green)', neg: 'var(--red)', neu: 'var(--teal)' };
+
+function renderTopicCloud() {
+  const cloudWrap = document.getElementById('cloud-wrap');
+  if(!cloudWrap) return;
+
+  cloudWrap.innerHTML = '';
+  TOPIC_CLOUD_TOPICS.forEach((item) => {
+    const span = document.createElement('span');
+    span.className = 'cloud-word';
+    span.textContent = item.text;
+    span.dataset.sentiment = item.sentiment;
+    span.style.fontSize = (item.size * 0.55 + 8) + 'px';
+    span.style.color = SENTIMENT_COLORS[item.sentiment];
+    span.style.opacity = '0.85';
+
+    span.addEventListener('mouseover', () => {
+      cloudWrap.querySelectorAll('.cloud-word').forEach((word) => {
+        word.style.opacity = '0.3';
+      });
+      span.style.opacity = '1';
+      span.style.color = 'var(--saffron)';
+    });
+
+    span.addEventListener('mouseout', () => {
+      cloudWrap.querySelectorAll('.cloud-word').forEach((word) => {
+        const sentiment = word.dataset.sentiment;
+        word.style.opacity = '0.85';
+        word.style.color = SENTIMENT_COLORS[sentiment] || '';
+      });
+    });
+
+    cloudWrap.appendChild(span);
+  });
+}
+
+function renderOverviewDistricts() {
+  const body = document.getElementById('overview-districts-body');
+  if(!body) return;
+
+  body.innerHTML = OVERVIEW_DISTRICTS.map((district) => `
+    <tr>
+      <td style="color:var(--neutral);font-weight:700;">${district.rank}</td>
+      <td style="font-weight:700;">${district.district}</td>
+      <td>${district.issues}</td>
+      <td>
+        <div class="mini-sent-bar" style="width:90px;">
+          <div style="flex:${district.sentiment.pos};background:var(--green-2);border-radius:2px;"></div>
+          <div style="flex:${district.sentiment.neg};background:var(--red-2);border-radius:2px;"></div>
+          <div style="flex:${district.sentiment.neu};background:#CBD5E1;border-radius:2px;"></div>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+const NEWS_LATEST_ARTICLES = [
+  {
+    source: 'Eenadu',
+    sourceStyle: 'background:var(--saffron-bg);color:var(--saffron);font-weight:700;',
+    category: 'Agriculture',
+    sentimentClass: 'positive',
+    sentimentLabel: 'Positive',
+    location: 'Kurnool',
+    time: '10:32 AM',
+    title: 'AP Government Launches New Irrigation Project Benefitting 50,000 Farmers',
+    summary: 'State government approved a major irrigation expansion covering 12 mandals, directly benefitting small and marginal farmers in Kurnool and Anantapur districts.',
+    tags: ['#irrigation', '#farming', '#Kurnool']
+  },
+  {
+    source: 'Times of India',
+    sourceStyle: 'background:var(--blue-bg);color:var(--blue);font-weight:700;',
+    category: 'Infrastructure',
+    sentimentClass: 'negative',
+    sentimentLabel: 'Negative',
+    location: 'Visakhapatnam',
+    time: '9:18 AM',
+    title: 'Visakhapatnam Water Supply Crisis Enters 3rd Day, Residents Protest',
+    summary: 'Residents of 8 wards are struggling without potable water supply following a pipeline burst. Municipal authorities promise restoration within 24 hours.',
+    tags: ['#water', '#crisis', '#Vizag']
+  },
+  {
+    source: 'India Today',
+    sourceStyle: 'background:var(--teal-bg);color:var(--teal);font-weight:700;',
+    category: 'Education',
+    sentimentClass: 'positive',
+    sentimentLabel: 'Positive',
+    location: 'State-wide',
+    time: '8:45 AM',
+    title: 'State School Enrollment Up 18% Under Mana Badi Mana Bhavishyathu Programme',
+    summary: 'The Mana Badi Mana Bhavishyathu infrastructure transformation has driven significant enrollment growth across AP government schools, with 96% satisfaction among parents surveyed.',
+    tags: ['#education', '#NaduNedu', '#enrollment']
+  },
+  {
+    source: 'Andhra Jyothi',
+    sourceStyle: 'background:rgba(139,69,19,0.08);color:#8B4513;font-weight:700;',
+    category: 'Infrastructure',
+    sentimentClass: 'negative',
+    sentimentLabel: 'Negative',
+    location: 'Nellore',
+    time: '11:02 AM',
+    title: 'Power Outages Hit Nellore Industrial Zone, Businesses Suffer Losses',
+    summary: 'Scheduled and unscheduled cuts are disrupting production in the Nellore industrial corridor, causing estimated losses of Rs 4.2 crore daily.',
+    tags: ['#power', '#industry', '#Nellore']
+  },
+  {
+    source: 'Times of India',
+    sourceStyle: 'background:var(--blue-bg);color:var(--blue);font-weight:700;',
+    category: 'Infrastructure',
+    sentimentClass: 'negative',
+    sentimentLabel: 'Negative',
+    location: 'Visakhapatnam',
+    time: '9:18 AM',
+    title: 'Visakhapatnam Water Supply Crisis Enters 3rd Day, Residents Protest',
+    summary: 'Residents of 8 wards are struggling without potable water supply following a pipeline burst. Municipal authorities promise restoration within 24 hours.',
+    tags: ['#water', '#crisis', '#Vizag']
+  },
+  {
+    source: 'Eenadu',
+    sourceStyle: 'background:var(--saffron-bg);color:var(--saffron);font-weight:700;',
+    category: 'Agriculture',
+    sentimentClass: 'positive',
+    sentimentLabel: 'Positive',
+    location: 'Kurnool',
+    time: '10:32 AM',
+    title: 'AP Government Launches New Irrigation Project Benefitting 50,000 Farmers',
+    summary: 'State government approved a major irrigation expansion covering 12 mandals, directly benefitting small and marginal farmers in Kurnool and Anantapur districts.',
+    tags: ['#irrigation', '#farming', '#Kurnool']
+  },
+  // {
+  //   source: 'Sakshi',
+  //   sourceStyle: 'background:var(--green-bg);color:var(--green);font-weight:700;',
+  //   category: 'Finance',
+  //   sentimentClass: 'positive',
+  //   sentimentLabel: 'Positive',
+  //   location: 'State-wide',
+  //   time: '7:30 AM',
+  //   title: 'YSRCP Welfare Disbursements Cross Rs 2,400 Crore Mark This Quarter',
+  //   summary: 'Navaratnalu scheme disbursements exceeded Rs 2,400 crore, with direct bank transfers reaching 96 lakh beneficiaries across all 13 districts.',
+  //   tags: ['#welfare', '#NAVARATNALU', '#schemes']
+  // }
+];
+
+const NEWS_SOURCE_BREAKDOWN = [
+  { name: 'Eenadu', count: 320, width: 100, color: 'var(--saffron)' },
+  { name: 'Times of India', count: 284, width: 88, color: 'var(--blue-2)' },
+  { name: 'Sakshi', count: 261, width: 81, color: 'var(--green-2)' },
+  { name: 'Andhra Jyothi', count: 198, width: 61, color: '#8B4513' },
+  { name: 'India Today', count: 156, width: 48, color: 'var(--teal-2)' },
+  // { name: 'Hindustan Times', count: 142, width: 44, color: 'var(--neutral)' }
+];
+
+const NEWS_DEPARTMENT_COVERAGE = [
+  { name: 'Excise', pct: '28%', bg: 'var(--red-bg)', color: 'var(--red)' },
+  { name: 'Health', pct: '23%', bg: 'var(--green-bg)', color: 'var(--green)' },
+  { name: 'Education', pct: '19%', bg: 'var(--blue-bg)', color: 'var(--blue)' },
+  { name: 'Energy', pct: '17%', bg: 'var(--saffron-bg)', color: 'var(--saffron)' },
+  { name: 'Finance', pct: '8%', bg: 'var(--teal-bg)', color: 'var(--teal)' },
+  { name: 'Revenue', pct: '5%', bg: 'var(--surface-2)', color: 'var(--neutral)' }
+];
+
+const SOCIAL_NARRATIVE_SUMMARY = [
+  {
+    platform: 'Twitter / X',
+    accent: '#1DA1F2',
+    sentiment: { pos: 38, neg: 48, neu: 14 },
+    points: [
+      'Water supply failures in Visakhapatnam continue to dominate discussions.',
+      'Power outage complaints in Nellore are rising in frequency.',
+      'Scheme disbursement narratives remain strong in rural segments.'
+    ]
+  },
+  {
+    platform: 'Facebook',
+    accent: '#1877F2',
+    sentiment: { pos: 52, neg: 28, neu: 20 },
+    points: [
+      'Community pages are amplifying welfare-scheme testimonials consistently.',
+      'Conversations in Guntur and Tirupati remain supportive of school infrastructure upgrades.',
+      'Health camp-related posts are seeing strong organic reach in Rayalaseema.'
+    ]
+  },
+  {
+    platform: 'YouTube',
+    accent: '#FF0000',
+    sentiment: { pos: 61, neg: 21, neu: 18 },
+    points: [
+      'Government scheme awareness videos are seeing high engagement.',
+      'Search volume around governance and welfare topics continues upward.',
+      'Education-focused narratives perform strongly with youth audiences.'
+    ]
+  },
+  {
+    platform: 'Instagram',
+    accent: '#E1306C',
+    sentiment: { pos: 55, neg: 25, neu: 20 },
+    points: [
+      'Community pages are amplifying welfare-scheme testimonials consistently.',
+      'Conversations in Guntur and Tirupati remain supportive of school infrastructure upgrades.',
+      'Health camp-related posts are seeing strong organic reach in Rayalaseema.'
+    ]
+  },
+];
+
+const SOCIAL_TRENDING_HASHTAGS = [
+  { rank: 1, tag: '#VisakhaWaterCrisis', sentimentClass: 'negative', sentimentLabel: 'neg', count: '14.2K' },
+  { rank: 2, tag: '#AnnadataSukhibhava', sentimentClass: 'positive', sentimentLabel: 'pos', count: '10.9K' },
+  { rank: 3, tag: '#ManaBadiManaBhavishyathu', sentimentClass: 'positive', sentimentLabel: 'pos', count: '8.3K' },
+  { rank: 4, tag: '#APPowerCut', sentimentClass: 'negative', sentimentLabel: 'neg', count: '7.2K' },
+  { rank: 5, tag: '#CBNGovt', sentimentClass: 'neutral', sentimentLabel: 'neu', count: '6.4K' },
+  { rank: 6, tag: '#AndhraPradesh', sentimentClass: 'neutral', sentimentLabel: 'neu', count: '5.9K' },
+  { rank: 7, tag: '#SuperSixAP', sentimentClass: 'positive', sentimentLabel: 'pos', count: '4.9K' }
+];
+
+const SCHEME_PERFORMANCE_ITEMS = [
+  { tone: 'pos', score: 78, emoji: '🌾', name: 'Annadata Sukhibhava', mentions: '8,420', delta: '+14%' },
+  { tone: 'avg', score: 61, emoji: '📚', name: 'Mana Badi Mana Bhavishyathu', mentions: '3,840', delta: '+11%' },
+  { tone: 'pos', score: 72, emoji: '🏥', name: 'NTR Vaidya Seva', mentions: '6,180', delta: '+9%' },
+  { tone: 'avg', score: 65, emoji: '💼', name: 'Adarana Scheme', mentions: '4,920', delta: '+21%' },
+  { tone: 'pos', score: 74, emoji: '🏠', name: 'NTR Housing Scheme', mentions: '5,190', delta: '+18%' },
+  { tone: 'pos', score: 69, emoji: '💎', name: 'Super Six', mentions: '7,340', delta: '+6%' },
+];
+
+function renderNewsLatestArticles() {
+  const container = document.getElementById('news-latest-articles');
+  if(!container) return;
+
+  container.innerHTML = NEWS_LATEST_ARTICLES.map((article, index) => {
+    const borderStyle = index === NEWS_LATEST_ARTICLES.length - 1 ? '' : 'border-bottom:1px solid var(--border-2);';
+    return `
+      <div style="padding:14px 0;min-height:140px;display:flex;flex-direction:column;justify-content:flex-start;${borderStyle}">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:7px;">
+          <span class="tag" style="${article.sourceStyle}">${article.source}</span>
+          <span class="pill ${article.sentimentClass}" style="font-size:10px;"><span class="dot"></span>${article.sentimentLabel}</span>
+          <span class="text-xs text-muted">📍 ${article.location} &nbsp;·&nbsp; 🕐 ${article.time}</span>
+        </div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.4;">${article.title}</div>
+        <div style="font-size:12px;color:var(--ink-soft);line-height:1.7;">${article.summary}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderNewsSourceBreakdown() {
+  const container = document.getElementById('news-source-breakdown');
+  if(!container) return;
+
+  container.innerHTML = NEWS_SOURCE_BREAKDOWN.map((source) => `
+    <div class="source-row">
+      <div class="source-dot" style="background:${source.color};"></div>
+      <div class="source-name">${source.name}</div>
+      <div class="source-bar-track"><div class="source-bar-fill" style="width:${source.width}%;background:${source.color};"></div></div>
+      <div class="source-count">${source.count}</div>
+    </div>
+  `).join('');
+}
+
+function renderNewsDepartmentCoverage() {
+  const container = document.getElementById('news-department-coverage');
+  if(!container) return;
+
+  container.innerHTML = NEWS_DEPARTMENT_COVERAGE.map((dept) => `
+    <div class="dept-tile" style="background:${dept.bg};">
+      <div class="dept-tile-pct" style="color:${dept.color};">${dept.pct}</div>
+      <div class="dept-tile-name" style="color:${dept.color};">${dept.name}</div>
+    </div>
+  `).join('');
+}
+
+function renderSocialNarrativeSummary() {
+  const container = document.getElementById('social-narrative-summary');
+  if(!container) return;
+
+  container.innerHTML = SOCIAL_NARRATIVE_SUMMARY.map((item, index) => {
+    const points = item.points.map((point) => `<li style="margin-bottom:4px;">${point}</li>`).join('');
+    const blockStyle = index === SOCIAL_NARRATIVE_SUMMARY.length - 1 ? 'margin-bottom:0;' : '';
+    return `
+      <div class="narrative-block" style="${blockStyle}">
+        <div class="narrative-accent" style="background:${item.accent};"></div>
+        <div class="narrative-content">
+          <div class="narrative-platform" style="color:${item.accent};">${item.platform}</div>
+          <ul style="margin:0 0 10px 18px;color:var(--ink-soft);font-size:12px;line-height:1.6;">
+            ${points}
+          </ul>
+          <div class="sent-bar" style="margin-bottom:8px;"><div class="sent-pos" style="flex:${item.sentiment.pos}"></div><div class="sent-neg" style="flex:${item.sentiment.neg}"></div><div class="sent-neu" style="flex:${item.sentiment.neu}"></div></div>
+          <div class="narrative-stats">
+            <span class="narrative-stat" style="color:var(--green-2);">${item.sentiment.pos}% pos</span>
+            <span class="narrative-stat" style="color:var(--red-2);">${item.sentiment.neg}% neg</span>
+            <span class="narrative-stat" style="color:var(--neutral);">${item.sentiment.neu}% neu</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSocialTrendingHashtags() {
+  const container = document.getElementById('social-trending-hashtags');
+  if(!container) return;
+
+  container.innerHTML = SOCIAL_TRENDING_HASHTAGS.map((item) => `
+    <div class="hashtag-item">
+      <div class="hashtag-rank">${item.rank}</div>
+      <div class="hashtag-tag">${item.tag}</div>
+      <span class="pill ${item.sentimentClass}" style="font-size:10px;"><span class="dot"></span>${item.sentimentLabel}</span>
+      <div class="hashtag-count">${item.count}</div>
+    </div>
+  `).join('');
+}
+
+function renderSchemePerformance(targetId, mode) {
+  const container = document.getElementById(targetId);
+  if(!container) return;
+
+  container.innerHTML = SCHEME_PERFORMANCE_ITEMS.map((item) => {
+    const deltaColor = item.tone === 'avg' ? 'var(--saffron)' : 'var(--green-2)';
+    const footer = mode === 'social'
+      ? `<div style="margin-top:6px;font-size:10.5px;color:${deltaColor};font-weight:700;font-family:var(--font-mono);">↑ ${item.delta} this week</div>`
+      : '';
+    const mentionsText = mode === 'page'
+      ? `${item.mentions} mentions · ↑ ${item.delta}`
+      : `${item.mentions} mentions`;
+
+    return `
+      <div class="scheme-card ${item.tone}">
+        <div class="scheme-score-ring"><div class="scheme-score-val">${item.score}%</div></div>
+        <div class="scheme-emoji">${item.emoji}</div>
+        <div class="scheme-name">${item.name}</div>
+        <div class="scheme-mentions">${mentionsText}</div>
+        <div class="sent-bar"><div class="sent-pos" style="flex:${item.score}"></div><div class="sent-neg" style="flex:${100 - item.score}"></div></div>
+        ${footer}
+      </div>
+    `;
+  }).join('');
+}
+
+renderTopicCloud();
+renderOverviewDistricts();
+renderNewsLatestArticles();
+renderNewsSourceBreakdown();
+renderNewsDepartmentCoverage();
+renderSocialNarrativeSummary();
+renderSocialTrendingHashtags();
+renderSchemePerformance('social-scheme-performance-grid', 'social');
+renderSchemePerformance('page-scheme-performance-grid', 'page');
+
+// ── Tab buttons (non-nav) ─────────────────────────────────────────
+document.querySelectorAll('.tabs .tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.tabs').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
