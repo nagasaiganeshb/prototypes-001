@@ -94,19 +94,25 @@ body{font-family:var(--f-ui);background:var(--bg);color:var(--ink);line-height:1
     radial-gradient(ellipse 80% 30% at 100% 90%,rgba(20,170,170,0.07) 0%,transparent 60%);
 }
 .sb-brand{
-  padding:20px 18px 16px;
+  padding:20px 20px 16px;
   border-bottom:1px solid rgba(255,255,255,0.06);
-  display:flex;align-items:center;gap:11px;position:relative;z-index:1;flex-shrink:0;
+  position:relative;z-index:1;flex-shrink:0;
 }
-.sb-logomark{
-  width:36px;height:36px;border-radius:9px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--gold),var(--gold-2));
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 12px rgba(212,146,26,0.45);
-  font-size:16px;
+.brand-logo{
+  display:flex;align-items:center;gap:11px;
 }
-.sb-title{font-family:var(--f-display);font-size:15px;font-weight:700;color:#fff;line-height:1.1;letter-spacing:-0.2px}
-.sb-subtitle{font-size:10px;color:rgba(255,255,255,0.38);margin-top:2px;font-family:var(--f-mono);letter-spacing:0.3px}
+.brand-logo-img{
+  width:40px;height:40px;border-radius:var(--r-md);object-fit:cover;
+  box-shadow:0 4px 14px rgba(0,0,0,0.25);flex-shrink:0;border:0;
+}
+.brand-name{line-height:1.2}
+.brand-name strong{
+  display:block;font-size:14px;font-weight:700;color:#fff;letter-spacing:-0.2px;
+}
+.brand-name span{
+  font-size:10px;color:rgba(255,255,255,0.38);letter-spacing:1.4px;
+  text-transform:uppercase;font-weight:500;
+}
 
 
 .nav-group{margin-bottom:4px}
@@ -574,6 +580,9 @@ body{font-family:var(--f-ui);background:var(--bg);color:var(--ink);line-height:1
   display:inline-block;
 }
 .cloud-word:hover { transform:scale(1.1); opacity:1 !important; }
+.sent-legend{display:flex;gap:14px;margin-top:7px}
+.sent-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:500}
+.sent-legend-dot{width:8px;height:8px;border-radius:50%}
 
 /* ─── MENTION ROW ──────────────────────────────────────────── */
 .mention-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-light)}
@@ -677,10 +686,12 @@ body{font-family:var(--f-ui);background:var(--bg);color:var(--ink);line-height:1
 <!-- ═══════════════════ SIDEBAR ══════════════════════════════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-brand">
-    <div class="sb-logomark">🏛</div>
-    <div>
-      <div class="sb-title">GovInsight AI</div>
-      <div class="sb-subtitle">Andhra Pradesh</div>
+    <div class="brand-logo">
+      <img class="brand-logo-img" src="https://app.janatapulse.com/public/assets/g_logo.png" alt="GovInsight logo">
+      <div class="brand-name">
+        <strong>GovInsight AI</strong>
+        <span>Andhra Pradesh</span>
+      </div>
     </div>
   </div>
 
@@ -945,8 +956,21 @@ body{font-family:var(--f-ui);background:var(--bg);color:var(--ink);line-height:1
     <div class="card">
       <div class="card-head">
         <div><div class="card-title">☁ Topic Cloud</div><div class="card-sub">Size = reach · colour = sentiment</div></div>
+        <div class="tabs">
+          <button class="tab active">All</button>
+          <button class="tab">News</button>
+          <button class="tab">Social</button>
+        </div>
       </div>
-      <div class="card-body"><div class="cloud-wrap" id="ov-cloud" style="min-height:160px"></div></div>
+      <div class="card-body">
+        <div class="cloud-wrap" id="ov-cloud" style="min-height:160px"></div>
+        <div class="divider"></div>
+        <div class="sent-legend">
+          <div class="sent-legend-item"><div class="sent-legend-dot" style="background:var(--pos-2)"></div>Positive</div>
+          <div class="sent-legend-item"><div class="sent-legend-dot" style="background:var(--neg-2)"></div>Negative</div>
+          <div class="sent-legend-item"><div class="sent-legend-dot" style="background:var(--teal-2)"></div>Neutral</div>
+        </div>
+      </div>
     </div>
     <div class="card">
       <div class="card-head">
@@ -1706,8 +1730,22 @@ function renderCloud(id, topics) {
   if (!el) return;
   el.innerHTML = topics.map(([word, size, color]) => {
     const fs = Math.max(10, Math.min(22, size * 0.7 + 9));
-    return `<span class="cloud-word" style="font-size:${fs}px;color:${color}">${word}</span>`;
+    return `<span class="cloud-word" data-color="${color}" style="font-size:${fs}px;color:${color};opacity:0.85">${word}</span>`;
   }).join('');
+  const words = el.querySelectorAll('.cloud-word');
+  words.forEach((span) => {
+    span.addEventListener('mouseover', () => {
+      words.forEach((w) => { w.style.opacity = '0.3'; });
+      span.style.opacity = '1';
+      span.style.color = 'var(--gold)';
+    });
+    span.addEventListener('mouseout', () => {
+      words.forEach((w) => {
+        w.style.opacity = '0.85';
+        w.style.color = w.dataset.color || '';
+      });
+    });
+  });
 }
 
 function renderOvSentTrend() {
@@ -2501,6 +2539,16 @@ renderTopics('dept-topics', TOPICS);
 renderVCACards();
 renderVCAChannels();
 renderVCASentTrend();
+
+// Topic cloud tab buttons
+document.querySelectorAll('.tabs .tab').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const group = btn.closest('.tabs');
+    if (!group) return;
+    group.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
 </script>
 </body>
 </html>
